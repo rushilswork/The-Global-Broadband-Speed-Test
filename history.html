@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speedtest by Ookla - The Global Broadband Speed Test</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Josefin+Sans&display=swap');
+        body{
+            font-family: 'Josefin Sans', sans-serif;
+            background: linear-gradient(90deg,#14222e,#2c3c4a);
+            color: #eaeaea;
+        }
+        ul li{
+            color: #01b6be;
+        }
+        span a{
+            color: #01b6be;
+        }
+        a{
+            text-decoration: none;
+        }
+        li{
+            display: inline-block;
+            margin-right: 50px;
+        }
+        ul{
+            position: absolute;
+            right: 0;
+        }
+        span.title{
+            position: absolute;
+            right: 1100px;
+            top: -10px;
+            color: #01b6be;
+            font-size: xx-large;
+            font-weight: bolder;
+        }
+        span.title:hover, ul a:hover{
+            color: #aaffff;
+            text-shadow: 0 0 8px #81ecec;
+        }
+  </style>
+</head>
+<body>
+    <nav>
+        <ul style="list-style-type: none;"><span class="title"><a href="/"><li>Rspeed</li></a></span>
+            <a href="/">
+                <li>Home</li>
+            </a>
+            <a href="history.html">
+                <li>History</li>
+            </a>
+            <a href="signin.html">
+                <li>Sign In</li>
+            </a>
+            <a href="signup.html">
+                <li>Sign Up</li>
+            </a>
+        </ul>
+    </nav>
+    <h1>User History</h1>
+    <ul id="historyList"></ul>
+    <script>
+        // Access the history data passed from the server
+        const historyData = userHistory;
+        // Access the historyList element
+        const historyList = document.getElementById('historyList');
+        console.log(historyData);
+        // Populate the historyList with the history data
+        historyData.forEach(item => {
+          const listItem = document.createElement('li');
+          listItem.textContent = item;
+          historyList.appendChild(listItem);
+        });
+        </script>
+</body>
+</html>

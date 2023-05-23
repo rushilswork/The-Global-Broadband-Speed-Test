@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speedtest by Ookla - The Global Broadband Speed Test</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Josefin+Sans&display=swap');
+        body{
+            font-family: 'Josefin Sans', sans-serif;
+            background: linear-gradient(90deg,#14222e,#2c3c4a);
+            color: #eaeaea;
+        }
+        ul li{
+            color: #01b6be;
+        }
+        span a{
+            color: #01b6be;
+        }
+        a{
+            text-decoration: none;
+
+        }
+        li{
+            display: inline-block;
+            margin-right: 50px;
+        }
+        ul{
+            position: absolute;
+            right: -17px;
+            top: 8px;
+        }
+        span.title{
+            position: absolute;
+            right: 1050px;
+            top: -10px;
+            color: #01b6be;
+            font-size: xx-large;
+            font-weight: bolder;
+        }
+        .box1,.box2{
+            margin-left: 10px;
+            width: 600px;
+            height: 500px;
+            position: relative;
+            top: 100px;
+            font-size:larger;
+            text-align: justify;
+            display: inline-block;
+        }
+        .box1 p{
+            font-weight: 100;
+            margin-top: 50px;
+        }
+        .box2{
+            margin-left: 20px;
+            position: absolute;
+            bottom: 30px;
+            top: 150px;
+        }
+        .box2 > h2{
+            font-size: 20px;
+        }
+        button{
+            font-size: 15px;
+            font-weight: bold;
+            position: relative;
+            top: 10px;
+            width: 100px;
+            height: 40px;
+            border-radius: 70px;
+            border: 0;;
+            background-color: aqua;
+        }
+        button:hover{
+            background-color: #aaffff;
+            text-shadow: 0 0 8px #81ecec
+        }
+        p > a {
+            color: #aaffff;
+        }
+        p > a:hover{
+            text-shadow: 0 0 8px #81ecec  
+        }
+        span.title:hover, ul a:hover{
+            color: #aaffff;
+            text-shadow: 0 0 8px #81ecec;
+        }
+        input{
+            display: inline-block;
+            padding: 5px;
+            margin-bottom: 10px;
+            width: 600px;
+            height: 30px;
+            background-color: transparent;
+            border: 1px solid rgb(255, 255, 255);
+            border-radius: 5px;
+            font-size: large;
+            color: antiquewhite;
+
+        }
+        input:focus{
+            color: antiquewhite;
+            border-color: #ffffff;
+        }
+  </style>
+</head>
+<body>
+    <nav>
+        <ul style="list-style-type: none;"><span class="title"><a href="/main.html"><li>SpeedPulse</li></a></span>
+            <a href="/home.html">
+                <li>Home</li>
+            </a>
+            <a href="history.html">
+                <li>History</li>
+            </a>
+            <a href="signin.html">
+                <li>Sign In</li>
+            </a>
+        </ul>
+    </nav>
+    <div class="box1">
+        <h2>LOG IN</h2>
+        <p>Join the millions of other people helping us to accelerate the Internet! By creating an account, you’ll be able to access your historical results anywhere and manage your Speedtest preferences. 
+        <br>
+        <form action='/signup.html' method="GET">
+            <button type="submit">Register</button>    
+        </form>
+        
+    </div>
+    <div class="box2">
+        <h2>LOG IN</h2>
+    
+        <form action="/signin.html" method="POST">
+            <label for="email">Email address (this will be your login)</label>
+            <br>
+            <br>
+            <input type="email" id="email" name="email" required>
+            <br>
+            <label for="password">Choose a password </label>
+            <br>
+            <br>
+            <input type="password" id="password" name="password" required>
+            <br>
+            <button type="submit">Log in</button>
+        </form>
+    </div>
+    
+</body>
+</html>

@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Speedtest by Ookla - The Global Broadband Speed Test</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Josefin+Sans&display=swap');
+        body{
+            font-family: 'Josefin Sans', sans-serif;
+            background: linear-gradient(90deg,#14222e,#2c3c4a);
+            color: #eaeaea;
+        }
+
+        *.hide {
+            display: none !important;
+
+        }
+        .container{
+            position: relative;;
+            display: inline-block;;
+            top: 300px;
+            left: 630px;
+            transform: translate(-50%,-50%);
+            background: linear-gradient(45deg, transparent 50%,rgba(255,255,255,0.08));
+            background-color: #223140;
+            border-radius: 24px;
+            text-align: center;
+            box-shadow: -16px 16px 16px 8px rgba(0,0,0,0.2);
+        }
+
+        .loader-widget{ 
+            width: 750px;
+            height:80px;
+            position: relative;
+            top: -250px;
+            right: -20px;
+        }   
+
+        .loader{
+            position: relative;
+            display: inline-block;
+            top: 123px;
+            right: 20px;
+            height: 120px;
+            width: 120px;
+            border-radius: 50%;
+            background: conic-gradient(rgba(1,182,190,0.3) 0%, transparent 65%);
+            animation: radarRotate 2s linear infinite;
+        }
+
+        @keyframes radarRotate {
+            100% {transform: rotate(-360deg);}
+        }
+        .loader:before{
+            content: '';
+            position: absolute;
+            height: 0;
+            width: 0;
+            top: 0;
+            left: calc(50% - 8px);
+            border: 8px solid transparent;
+            border-top: 65px solid #81ecec;
+            filter: drop-shadow(0 0 12px #01b6be);
+        }
+
+        .loader-widget h1{
+            line-height: 1.3;
+            margin-bottom: 32px;
+            color: #aaffff;
+            text-shadow: 0 0 8px #81ecec;
+        }
+     
+        .heading{
+            position: relative;
+            top: 80px;
+            left: 15px;
+            line-height: 1.3;
+            color: #aaffff;
+            text-align: center;
+            text-shadow: 0 0 8px #81ecec;
+        }
+        .loader-content button{
+            position: relative; 
+            cursor: pointer;
+            top: 120px;
+            left: -20px;
+            right: 30px;
+            height: 120px;
+            width: 120px;
+            font-size: 18px;
+            font-weight: bold;
+            line-height: 1.5;
+            border-radius: 50%;
+            background-color: #223140;
+            color: #eaeaea;
+            border: 0;
+            box-shadow: 0 0 12px #81ecec;
+        }
+
+
+        .loader-content.result button{
+            height: 120px;
+            width: 120px;
+            margin-top: 16px;
+        }
+        .loader-content button:hover{
+            background-color:  #1f3c4e;;
+        }
+        .loader-content button::before{
+            content: "";
+            position: absolute;
+            height: 100%;;
+            width: 100%;
+            top: -2px;
+            left: -2px;
+            border: 2px solid #7ed6d4;
+            border-radius: 50%;
+            animation: btnRing 2s linear infinite;
+        }
+
+        @keyframes btnRing{
+            60%, 100%{
+                height: calc(100% + 60px);
+                width: calc(100% + 60px);
+                top: -32px;
+                left: -32px;
+                opacity: 0;;
+            }
+        }
+
+        .loader-content button:after{
+            content: "";
+            position: absolute;
+            height: calc(100% + 4px);
+            width: calc(100% + 4px);
+            top: -2px;
+            left: -2px;
+            background: linear-gradient(45deg, #25476e,#c7ecee);
+            z-index: -1;
+            border-radius: 50%;
+        }
+
+        .content{
+            display: flex;
+            width: 100%;;
+            font-size: 64px;
+            margin: 12px 0 32px 0;
+            flex-direction: column;
+        }
+
+        .content small{
+            font-size: 40%;
+        }
+
+        #checkButton{
+            font-size: xx-large;
+        }
+        p{
+            display: inline-block;
+            margin-left: 5px;
+            font-weight: normal;
+        }
+        h3{
+            display: inline-block;
+            font-weight: 900;
+        }
+        .head{
+            margin-left: 400px;
+        }
+        span.title:hover, ul a:hover{
+            color: #aaffff;
+            text-shadow: 0 0 8px #81ecec;
+        }
+        .down,.up,.downloaded,.uploaded,.Latency,.bufferBloat{
+            display: inline-block;
+            margin: 0 155px 0 135px;
+        }
+        .down,.up,.downloaded,.uploaded,.Latency,.bufferBloat{
+            font-size: x-large;
+            color: #aaffff;
+            text-shadow: 0 0 8px #81ecec;
+        }
+        .down,.downloaded,.Latency{
+            position: relative;
+            right: 100px;
+        }
+        .up,.uploaded,.bufferBloat{
+            position: relative;
+            left: 125px;
+        }
+        .Latency,.bufferBloat{
+            position: relative;
+            bottom: -30px;
+        }
+        .bufferBloat{
+            margin-left: 110px;
+        }
+        .first > h3{
+            position: relative;
+            left: 50px;
+            top: 10px;
+        }
+        .first > .head{
+            position: relative;
+            top: 12px;
+            left: -50px;
+        }
+        .down,.up{
+            position: relative;
+            bottom: -20px;
+        }
+        .up{
+            margin-left: 110px;
+        }
+        .downloaded,.uploaded{
+            position: relative;
+            bottom: -30px;
+        }
+        .uploaded{
+            margin-left: 110px;
+        }
+        .second > h3{
+            margin-right: 10px;
+            position: relative;
+            bottom: -20px;
+            right: 5px;
+        }
+
+        .second > .head{
+            margin-left: 390px;
+            position: relative;
+            bottom: -20px;
+            right: 35px;
+        }
+        .third > h3{
+            margin-right: -10px;
+            position: relative;
+            right:28px;
+            bottom: -30px;
+        }
+        .third > .head{
+            position: relative;
+            bottom: -30px;
+            right: 15px;
+        }
+        span{
+            font-weight: 100;
+        }
+        .local{
+            position: fixed;
+            top: 380px;
+        }
+        .local > h3{
+            position: relative;
+            left: 550px;
+            top: 120px;           
+        }
+
+        .local > .head{
+            position: relative;
+            left: 250px;
+        }
+        h2.userLocation{
+            position: fixed;
+            top: 495px;
+            left: 280px
+        }
+        h2.userIP{
+            position: fixed;
+            top: 495px;
+            left: 800px;
+        }
+        .userLocation,.userIP{
+            color: #aaffff;
+            text-shadow: 0 0 8px #81ecec;
+        }
+        li{
+            display: inline-block;
+            margin-right: 50px;
+        }
+        ul{
+            position: absolute;
+            right: 0;
+        }
+        span.title{
+            position: absolute;
+            right: 1050px;
+            top: -10px;
+            color: #01b6be;
+            font-size: xx-large;
+            font-weight: bolder;
+        }
+        ul li{
+            color: #01b6be;
+        }
+        span a{
+            color: #01b6be;
+        }
+        a{
+            text-decoration: none;
+        }
+        h3:hover{
+            color: #aaffff;
+            text-shadow: 0 0 8px #81ecec
+        }
+  </style>
+</head>
+<body>
+    <nav>
+        <ul style="list-style-type: none;"><span class="title"><a href="/main.html"><li>SpeedPulse</li></a></span>
+            <a href="/home.html">
+                <li>Home</li>
+            </a>
+            <a href="history.html">
+                <li>History</li>
+            </a>
+            <a href="logout.html">
+                <li>Log out</li>
+            </a>
+        </ul>
+    </nav>
+  <div class="container">
+    <div class="first">
+        <h3><i class="fa-sharp fa-solid fa-circle-up fa-shake" style="color: #ffffff;"></i> DOWNLOAD <span>Mbps</span></h3>
+        <h3 class="head"><i class="fa-sharp fa-solid fa-circle-down fa-shake" style="color: #ffffff;"></i> UPLOAD <span>Mbps</span></h3>
+    </div>
+    <div class="down">
+    </div>
+    <div class="up">
+    </div>
+    <div class="second">
+        <h3><i class="fa-sharp fa-solid fa-download fa-shake"></i> Downloaded </h3>
+        <h3 class="head"><i class="fa-sharp fa-solid fa-upload fa-shake" style="color: #ffffff;"></i> Uploaded</h3>
+    </div>
+    <div class="downloaded">
+    </div>
+    <div class="uploaded">
+    </div>
+    <div class="third">
+        <h3><i class="fa-sharp fa-solid fa-gauge-high fa-shake" style="color: #ffffff;"></i> Latency </h3>
+        <i class="fa-sharp fa-solid fa-router fa-shake" style="color: #ffffff;"></i>
+        <h3 class="head"><i class="fa-sharp fa-solid fa-cloud fa-shake" style="color: #ffffff;"></i> bufferBloat</h3>
+    </div>
+    <div class="Latency">
+    </div>
+    <div class="bufferBloat">
+    </div>
+
+    <div class="loader-widget">
+      <span class="loader hide"></span>
+      <div class="loader-content ">
+        <div class="content hide"><small>Mbps</small></div>
+        <button id="checkButton">Go</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="local">  
+        <h3> <i class="fa-solid fa-location-dot fa-2xl fa-bounce" style="color: #ffffff;"></i></h3>
+        <h3 class="head"><i class="fa-sharp fa-solid fa-globe fa-2xl fa-bounce" style="color: #ffffff;"></i> </h3>
+    </div>
+    <h2 class="userLocation"></h2>
+    <h2 class="userIP"></h2>
+    <!-- <footer>
+        <div>
+            <i class="fa-sharp fa-solid fa-house fa-shake"></i>
+            <div class="foot">
+
+            </div>
+        </div>
+
+    </footer> -->
+    
+  <script>
+    document.getElementById('checkButton').addEventListener('click', function() {
+        var loader = document.querySelector('.loader');
+        var content = document.querySelector('.loader-content');
+      
+        // Show the loader animation and hide the content
+        
+        content.classList.add('hide');
+        loader.classList.remove('hide');
+        // Send the request to the server
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', '/speed', true);
+        xhr.onreadystatechange = function() {
+          if (xhr.readyState === 4 && xhr.status === 200) {
+            var jsonData = JSON.parse(xhr.responseText);
+
+            // Update the content with the download speed
+            document.querySelector('.down').innerHTML = jsonData.downloadSpeed;
+            document.querySelector('.up').innerHTML = jsonData.uploadSpeed;
+            document.querySelector('.downloaded').innerHTML = jsonData.downloaded;
+            document.querySelector('.uploaded').innerHTML = jsonData.uploaded;
+            document.querySelector('.Latency').innerHTML = jsonData.latency;
+            document.querySelector('.bufferBloat').innerHTML = jsonData.bufferBloat;
+            document.querySelector('.userLocation').innerHTML = jsonData.userLocation;
+            document.querySelector('.userIP').innerHTML = jsonData.userIp;
+
+            
+            // Show the content and hide the loader animation
+            content.classList.remove('hide');
+            loader.classList.add('hide');
+            document.querySelector('#checkButton').innerHTML = "Again";
+          }
+        };
+        xhr.send();
+      });
+      
+</script>
+</body>
+</html>
