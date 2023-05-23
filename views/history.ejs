@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speedtest by Ookla - The Global Broadband Speed Test</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Josefin+Sans&display=swap');
+        body{
+            font-family: 'Josefin Sans', sans-serif;
+            background: linear-gradient(90deg,#14222e,#2c3c4a);
+            color: #eaeaea;
+        }
+        nav a{
+            position: relative;
+            bottom: 13px;
+            left: 16.5px;
+        }
+        ul li{
+            color: #01b6be;
+        }
+        span a{
+            color: #01b6be;
+        }
+        a{
+            text-decoration: none;
+        }
+        li{
+            display: inline-block;
+            margin-right: 50px;
+        }
+        ul{
+            position: absolute;
+            right: 0;
+        }
+        span.title{
+            position: absolute;
+            right: 1050px;
+            top: -10px;
+            color: #01b6be;
+            font-size: xx-large;
+            font-weight: bolder;
+        }
+        span.title:hover, ul a:hover{
+            color: #aaffff;
+            text-shadow: 0 0 8px #81ecec;
+        }
+        .historyul li{
+            display: block;
+            width: 300px;
+            position: relative;
+            right: 905px;
+            top: 60px;
+            margin-top: 10px;;
+        }
+        h1{
+            position: relative;
+            top: 100px;
+            left: 15px;
+        }
+        h3{
+            font-weight: 100;
+            position: relative;
+            top: 90px;
+            left: 18px;
+        }
+
+        .historycontainer{
+            position: relative;
+            left: 20px;
+        }
+  </style>
+</head>
+<body>
+    <nav>
+        <ul style="list-style-type: none;"><span class="title"><a href="/main.html"><li>SpeedPulse</li></a></span>
+            <a href="/home.html">
+                <li>Home</li>
+            </a>
+            <a href="history.html">
+                <li>History</li>
+            </a>
+            <a href="logout.html">
+                <li>Log out</li>
+            </a>
+        </ul>
+    </nav>
+    <!-- history.ejs -->
+
+<h1>User History</h1>
+<h3>Username: <%= username %> <br><br> Requests: <%= count %></h3>
+
+<ul>
+    <ul class="historyul">
+        <% for(var i = 0; i < count; i++){ %>
+            <div class="historycontainer">
+                <li>
+                    <i class="fa-sharp fa-solid fa-circle-up fa-shake" style="color: #ffffff;"></i>
+                    <%= nethistory[i].downloadSpeed %> <span>Mbps</span>
+                  </li>
+                  <li>
+                    <i class="fa-sharp fa-solid fa-circle-down fa-shake" style="color: #ffffff;"></i>
+                    <%= nethistory[i].uploadSpeed %> <span>Mbps</span>
+                  </li>
+                  <li>
+                    <i class="fa-sharp fa-solid fa-download fa-shake" style="color: #ffffff;"></i>
+                    <%= nethistory[i].downloaded%>
+                  </li>
+                  <li>
+                    <i class="fa-sharp fa-solid fa-upload fa-shake" style="color: #ffffff;"></i>
+                    <%= nethistory[i].uploaded %>
+                  </li>
+                  <li>
+                    <i class="fa-sharp fa-solid fa-gauge-high fa-shake" style="color: #ffffff;"></i>
+                    <%= nethistory[i].latency %>
+                  </li>
+                  <li>
+                    <i class="fa-sharp fa-solid fa-cloud fa-shake" style="color: #ffffff;"></i>
+                    <%= nethistory[i].bufferBloat %>
+                  </li>
+                  <li>
+                    <i class="fa-solid fa-location-dot fa-shake" style="color: #ffffff;"></i>
+                    <%= nethistory[i].userLocation %>
+                  </li>
+                  <li>
+                    <i class="fa-sharp fa-solid fa-globe fa-shake" style="color: #ffffff;"></i>
+                    <%= nethistory[i].userIp%><br><br><hr>
+                  </li>
+            </div>
+            <br>
+        <% } %>
+    </ul>
+</ul>
+
+   
+</body>
+</html>
