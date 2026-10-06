@@ -1,5 +1,11 @@
 # SpeedPulse - Internet Speed Test
 
+**Live demo: https://speedpulse.onrender.com** (free tier: the first visit after idle takes up to ~50 s to wake up)
+
+![CI](https://github.com/rushilswork/The-Global-Broadband-Speed-Test/actions/workflows/ci.yml/badge.svg)
+
+**Stack:** Node · Express 5 · libSQL/Turso · bcrypt · vanilla JS (no build step). Hosted free on Render with a Turso database.
+
 A browser-based speed test with accounts and history. Measures **your** connection (not the server's): download, upload, latency, jitter and a **bufferbloat grade** (latency under load).
 
 ## Features
@@ -62,9 +68,13 @@ turso db tokens create speedpulse       # -> TURSO_AUTH_TOKEN
 Or create the database in the Turso dashboard. On Render, set both variables under Environment. The schema is created automatically on first start.
 
 ## Deploy
+### Render + Turso (free)
+`render.yaml` is a Render Blueprint. Create the Turso database (above), then in Render choose New → Blueprint, pick this repo and fill in `TURSO_DATABASE_URL` and `TURSO_AUTH_TOKEN` when prompted. `SESSION_SECRET` is generated for you.
+
+### Docker
 ```bash
 docker build -t speedpulse .
 docker run -p 3000:3000 -e NODE_ENV=production -e SESSION_SECRET=$(openssl rand -hex 32) -v speedpulse-data:/app/data speedpulse
 ```
 
-> The previous version stored plaintext passwords and a database credential in the source. If you ever used it, rotate that credential.
+> The previous version stored plaintext passwords and a database credential in the source (now removed). If you ever used it, that credential should be considered exposed and rotated.
