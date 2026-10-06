@@ -13,6 +13,9 @@ services:
         value: production
       - key: SESSION_SECRET
         generateValue: true
-      # Free instances have an ephemeral disk: accounts/history reset on restart or redeploy.
-      - key: DB_PATH
-        value: /tmp/speedpulse.db
+      # Free external database (Turso). Render prompts for these on first sync; they are never stored in git.
+      # Without them the app falls back to a local file, which is wiped on every restart on the free tier.
+      - key: TURSO_DATABASE_URL
+        sync: false
+      - key: TURSO_AUTH_TOKEN
+        sync: false

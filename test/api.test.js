@@ -5,7 +5,7 @@ import { createApp } from '../src/app.js'
 let server, base
 
 before(async () => {
-  const { app } = createApp({ secret: 'test-secret' })
+  const { app } = await createApp({ db: { url: ':memory:' }, secret: 'test-secret' })
   await new Promise((r) => { server = app.listen(0, r) })
   base = `http://127.0.0.1:${server.address().port}`
 })

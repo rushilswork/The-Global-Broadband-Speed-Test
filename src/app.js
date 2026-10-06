@@ -13,9 +13,9 @@ const PUBLIC = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'pu
 const MAX_BYTES = 100 * 1024 * 1024
 const COLS = ['at', 'download', 'upload', 'latency', 'jitter', 'loaded_down', 'loaded_up', 'bufferbloat', 'grade', 'server', 'ip', 'city', 'country', 'isp']
 
-export function createApp({ dbPath = ':memory:', secret, production = false } = {}) {
+export async function createApp({ db: dbOptions = {}, secret, production = false } = {}) {
   if (!secret) throw new Error('A session secret is required')
-  const db = openDb(dbPath)
+  const db = await openDb(dbOptions)
   const app = express()
   app.disable('x-powered-by')
   if (production) app.set('trust proxy', 1)
@@ -110,9 +110,9 @@ export function createApp({ dbPath = ':memory:', secret, production = false } = 
   })
   const requireUser = (req, res, next) => (req.session?.uid ? next() : res.status(401).json({ error: 'Sign in required' }))
 
-  const findByEmail = db.prepare('SELECT id, email, password_hash FROM users WHERE email = ?')
-  const insertUser = db.prepare('INSERT INTO users (email, password_hash) VALUES (?, ?)')
-  const getUser = db.prepare('SELECT id, email FROM users WHERE id = ?')
+  const run = (sql, args = []) => db.execute({ sql, args })
+  const findByEmail = async (email) => (await run('SELECT id, email, password_hash FROM users WHERE email = ?', [email])).rows[0]
+  const getUser = async (id) => (await run('SELECT id, email FROM users WHERE id = ?', [id])).rows[0]
   // Comparing against a dummy hash keeps unknown-email and wrong-password timing equal.
   const DUMMY_HASH = bcrypt.hashSync('dummy-password', 10)
 
@@ -123,10 +123,10 @@ export function createApp({ dbPath = ':memory:', secret, production = false } = 
       return res.status(400).json({ error: 'Password must be 8-72 characters.' })
     }
     const clean = email.trim().toLowerCase()
-    if (findByEmail.get(clean)) return res.status(409).json({ error: 'An account with that email already exists.' })
+    if (await findByEmail(clean)) return res.status(409).json({ error: 'An account with that email already exists.' })
     const hash = await bcrypt.hash(password, 10)
     try {
-      const { lastInsertRowid } = insertUser.run(clean, hash)
+      const { lastInsertRowid } = await run('INSERT INTO users (email, password_hash) VALUES (?, ?)', [clean, hash])
       req.session = { uid: Number(lastInsertRowid) }
       res.status(201).json({ user: { email: clean } })
     } catch {
@@ -137,7 +137,7 @@ export function createApp({ dbPath = ':memory:', secret, production = false } = 
   api.post('/auth/signin', authLimiter, async (req, res) => {
     const { email, password } = req.body ?? {}
     const valid = typeof email === 'string' && typeof password === 'string'
-    const user = valid ? findByEmail.get(email.trim().toLowerCase()) : null
+    const user = valid ? await findByEmail(email.trim().toLowerCase()) : null
     const ok = await bcrypt.compare(valid ? password : '', user?.password_hash ?? DUMMY_HASH)
     if (!user || !ok) return res.status(401).json({ error: 'Incorrect email or password.' })
     req.session = { uid: user.id }
@@ -149,42 +149,34 @@ export function createApp({ dbPath = ':memory:', secret, production = false } = 
     res.status(204).end()
   })
 
-  api.get('/me', (req, res) => {
-    const user = req.session?.uid ? getUser.get(req.session.uid) : null
+  api.get('/me', async (req, res) => {
+    const user = req.session?.uid ? await getUser(req.session.uid) : null
     res.json({ user: user ? { email: user.email } : null })
   })
 
-  const listResults = db.prepare(`SELECT id, ${COLS.join(', ')} FROM results WHERE user_id = ? ORDER BY at DESC LIMIT 500`)
-  const insertResult = db.prepare(`INSERT INTO results (user_id, ${COLS.join(', ')}) VALUES (?, ${COLS.map(() => '?').join(', ')})`)
-  const deleteResult = db.prepare('DELETE FROM results WHERE id = ? AND user_id = ?')
-  const clearResults = db.prepare('DELETE FROM results WHERE user_id = ?')
+  const INSERT_SQL = `INSERT INTO results (user_id, ${COLS.join(', ')}) VALUES (?, ${COLS.map(() => '?').join(', ')})`
 
-  api.get('/results', requireUser, (req, res) => {
-    res.json({ results: listResults.all(req.session.uid).map(rowToResult) })
+  api.get('/results', requireUser, async (req, res) => {
+    const { rows } = await run(`SELECT id, ${COLS.join(', ')} FROM results WHERE user_id = ? ORDER BY at DESC LIMIT 500`, [req.session.uid])
+    res.json({ results: rows.map(rowToResult) })
   })
 
-  api.post('/results', requireUser, (req, res) => {
+  api.post('/results', requireUser, async (req, res) => {
     const items = Array.isArray(req.body) ? req.body.slice(0, 100) : [req.body]
     const rows = items.map(cleanResult)
     if (!rows.length || rows.some((r) => !r)) return res.status(400).json({ error: 'Invalid result payload.' })
-    db.exec('BEGIN')
-    try {
-      for (const r of rows) insertResult.run(req.session.uid, ...COLS.map((c) => r[c]))
-      db.exec('COMMIT')
-    } catch (err) {
-      db.exec('ROLLBACK')
-      throw err
-    }
+    // batch() runs all inserts in one transaction
+    await db.batch(rows.map((r) => ({ sql: INSERT_SQL, args: [req.session.uid, ...COLS.map((c) => r[c])] })), 'write')
     res.status(201).json({ saved: rows.length })
   })
 
-  api.delete('/results/:id', requireUser, (req, res) => {
-    const { changes } = deleteResult.run(Number(req.params.id), req.session.uid)
-    res.status(changes ? 204 : 404).end()
+  api.delete('/results/:id', requireUser, async (req, res) => {
+    const { rowsAffected } = await run('DELETE FROM results WHERE id = ? AND user_id = ?', [Number(req.params.id), req.session.uid])
+    res.status(rowsAffected ? 204 : 404).end()
   })
 
-  api.delete('/results', requireUser, (req, res) => {
-    clearResults.run(req.session.uid)
+  api.delete('/results', requireUser, async (req, res) => {
+    await run('DELETE FROM results WHERE user_id = ?', [req.session.uid])
     res.status(204).end()
   })
 

@@ -6,7 +6,7 @@
   "description": "SpeedPulse - browser-based internet speed test with latency, jitter and bufferbloat grading",
   "main": "server.js",
   "engines": {
-    "node": ">=22.5"
+    "node": ">=20"
   },
   "scripts": {
     "start": "node server.js",
@@ -15,6 +15,7 @@
   },
   "license": "MIT",
   "dependencies": {
+    "@libsql/client": "^0.18.0",
     "bcryptjs": "^3.0.3",
     "cookie-session": "^2.1.1",
     "express": "^5.2.1",

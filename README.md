@@ -12,7 +12,7 @@ A browser-based speed test with accounts and history. Measures **your** connecti
 - No frameworks, no build step
 
 ## Run
-Requires Node 22.5+ (uses the built-in `node:sqlite`).
+Requires Node 20+. Data is stored with libSQL: a local SQLite file in development, [Turso](https://turso.tech) (free) in production.
 
 ```bash
 npm install
@@ -24,7 +24,8 @@ Open http://localhost:3000. See `.env.example`; set these in your environment fo
 |---|---|
 | `PORT` | Port (default 3000) |
 | `SESSION_SECRET` | **Required in production.** Signs session cookies |
-| `DB_PATH` | SQLite file (default `./data/speedpulse.db`) |
+| `TURSO_DATABASE_URL`, `TURSO_AUTH_TOKEN` | Production database (Turso). Without them a local file is used, which hosts with ephemeral disks (Render free) wipe on restart |
+| `DB_PATH` | Local SQLite file when Turso isn't configured (default `./data/speedpulse.db`) |
 | `NODE_ENV=production` | Secure cookies, proxy trust |
 
 ```bash
@@ -46,10 +47,19 @@ Browser tests are bounded by the device, Wi-Fi, VPNs and the test server's route
 |---|---|
 | `server.js` | Entry point |
 | `src/app.js` | Express app: auth, results API, local test endpoints |
-| `src/db.js`, `src/validate.js` | SQLite schema, input validation |
+| `src/db.js`, `src/validate.js` | libSQL connection + schema, input validation |
 | `public/js/engine.js` | The speed test engine |
 | `public/js/*.js`, `public/*.html` | UI |
 | `test/` | `node:test` API + engine tests |
+
+## Persistent storage with Turso (free)
+```bash
+turso auth login
+turso db create speedpulse
+turso db show speedpulse --url          # -> TURSO_DATABASE_URL
+turso db tokens create speedpulse       # -> TURSO_AUTH_TOKEN
+```
+Or create the database in the Turso dashboard. On Render, set both variables under Environment. The schema is created automatically on first start.
 
 ## Deploy
 ```bash
