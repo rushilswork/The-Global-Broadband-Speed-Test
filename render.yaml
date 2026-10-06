@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: speedpulse
+    runtime: node
+    plan: free
+    buildCommand: npm ci
+    startCommand: node server.js
+    healthCheckPath: /api/ping
+    envVars:
+      - key: NODE_VERSION
+        value: 22
+      - key: NODE_ENV
+        value: production
+      - key: SESSION_SECRET
+        generateValue: true
+      # Free instances have an ephemeral disk: accounts/history reset on restart or redeploy.
+      - key: DB_PATH
+        value: /tmp/speedpulse.db
