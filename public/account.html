@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Account - SpeedPulse</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="topbar">
+    <a class="brand" href="/"><img src="/favicon.svg" alt="" width="30" height="30"><span>SpeedPulse</span></a>
+    <nav aria-label="Primary">
+      <a href="/">Test</a>
+      <a href="/history">History</a>
+      <a href="/account" id="nav-account" class="active" aria-current="page">Sign in</a>
+    </nav>
+  </header>
+  <main id="main" class="narrow">
+    <section id="signed-out" class="panel" hidden>
+      <div class="seg" role="tablist" aria-label="Account form">
+        <button type="button" role="tab" id="tab-in" aria-selected="true">Sign in</button>
+        <button type="button" role="tab" id="tab-up" aria-selected="false">Create account</button>
+      </div>
+      <form id="form" novalidate>
+        <label>Email <input type="email" id="email" autocomplete="username" required></label>
+        <label>Password <input type="password" id="password" autocomplete="current-password" minlength="8" required></label>
+        <p class="muted small" id="pw-hint" hidden>At least 8 characters.</p>
+        <p id="form-error" class="error" role="alert" hidden></p>
+        <button type="submit" class="go-sm" id="submit">Sign in</button>
+      </form>
+      <p class="muted small">Any results saved in this browser are uploaded to your account when you sign in.</p>
+    </section>
+    <section id="signed-in" class="panel" hidden>
+      <h1>Account</h1>
+      <p>Signed in as <strong id="who"></strong></p>
+      <button id="signout" type="button">Sign out</button>
+    </section>
+  </main>
+  <footer>SpeedPulse &middot; open source speed test</footer>
+  <script type="module" src="/js/account.js"></script>
+</body>
+</html>
