@@ -37,6 +37,15 @@
       <p>Signed in as <strong id="who"></strong></p>
       <button id="signout" type="button">Sign out</button>
     </section>
+    <section id="danger" class="panel danger-zone" hidden>
+      <h2>Delete account</h2>
+      <p class="muted small">Permanently deletes your account and every saved result. This cannot be undone.</p>
+      <form id="delete-form" novalidate>
+        <label>Confirm your password <input type="password" id="delete-password" autocomplete="current-password" required></label>
+        <p id="delete-error" class="error" role="alert" hidden></p>
+        <button type="submit" class="danger" id="delete-btn">Delete my account</button>
+      </form>
+    </section>
   </main>
   <footer>SpeedPulse &middot; open source speed test</footer>
   <script type="module" src="/js/account.js"></script>

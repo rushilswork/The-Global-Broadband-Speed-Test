@@ -144,6 +144,23 @@ export async function createApp({ db: dbOptions = {}, secret, production = false
     res.json({ user: { email: user.email } })
   })
 
+  // Permanently deletes the account and all of its results (requires the password again).
+  api.post('/auth/delete-account', authLimiter, requireUser, async (req, res) => {
+    const { password } = req.body ?? {}
+    const user = (await run('SELECT id, password_hash FROM users WHERE id = ?', [req.session.uid])).rows[0]
+    const ok = await bcrypt.compare(typeof password === 'string' ? password : '', user?.password_hash ?? DUMMY_HASH)
+    if (!user || !ok) return res.status(401).json({ error: 'Incorrect password.' })
+    await db.batch(
+      [
+        { sql: 'DELETE FROM results WHERE user_id = ?', args: [user.id] },
+        { sql: 'DELETE FROM users WHERE id = ?', args: [user.id] },
+      ],
+      'write',
+    )
+    req.session = null
+    res.status(204).end()
+  })
+
   api.post('/auth/signout', (req, res) => {
     req.session = null
     res.status(204).end()

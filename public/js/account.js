@@ -17,6 +17,7 @@ async function render() {
   const user = await currentUser()
   $('signed-out').hidden = !!user
   $('signed-in').hidden = !user
+  $('danger').hidden = !user
   if (user) $('who').textContent = user.email
 }
 
@@ -52,6 +53,30 @@ $('signout').addEventListener('click', async () => {
   await api('/auth/signout', { method: 'POST', body: {} })
   resetUser()
   location.href = '/'
+})
+
+$('delete-form').addEventListener('submit', async (e) => {
+  e.preventDefault()
+  const err = $('delete-error')
+  err.hidden = true
+  const password = $('delete-password').value
+  if (!password) {
+    err.textContent = 'Enter your password to confirm.'
+    err.hidden = false
+    return
+  }
+  if (!confirm('Delete your account and all saved results permanently?')) return
+  $('delete-btn').disabled = true
+  try {
+    await api('/auth/delete-account', { method: 'POST', body: { password } })
+    resetUser()
+    location.href = '/'
+  } catch (ex) {
+    err.textContent = ex.message
+    err.hidden = false
+  } finally {
+    $('delete-btn').disabled = false
+  }
 })
 
 setMode('in')

@@ -83,6 +83,21 @@ test('results require auth and are scoped per user', async () => {
   assert.equal((await a('/api/results')).json.results.length, 0)
 })
 
+test('account deletion requires the password and removes all data', async () => {
+  const a = client()
+  await a('/api/auth/signup', { method: 'POST', body: { email: 'del@example.com', password: 'delete-me-123' } })
+  await a('/api/results', { method: 'POST', body: good })
+
+  assert.equal((await client()('/api/auth/delete-account', { method: 'POST', body: { password: 'x' } })).status, 401) // not signed in
+  assert.equal((await a('/api/auth/delete-account', { method: 'POST', body: { password: 'wrong-password' } })).status, 401)
+  assert.equal((await a('/api/results')).json.results.length, 1) // still there
+
+  assert.equal((await a('/api/auth/delete-account', { method: 'POST', body: { password: 'delete-me-123' } })).status, 204)
+  assert.equal((await a('/api/me')).json.user, null)
+  const again = await client()('/api/auth/signin', { method: 'POST', body: { email: 'del@example.com', password: 'delete-me-123' } })
+  assert.equal(again.status, 401)
+})
+
 test('rejects implausible results', async () => {
   const a = client()
   await a('/api/auth/signup', { method: 'POST', body: { email: 'v@example.com', password: 'password-v1' } })

@@ -129,3 +129,12 @@ th { color: var(--muted); font-size: 0.75rem; text-transform: uppercase; letter-
 form label { display: block; margin-top: 12px; color: var(--muted); font-size: 0.9rem; }
 
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+.danger-zone { border-color: rgba(255, 93, 115, 0.35); }
+button.danger { color: var(--red); border-color: rgba(255, 93, 115, 0.5); margin-top: 12px; }
+
+@media (max-width: 480px) {
+  .topbar { padding: 12px 14px; gap: 8px; }
+  .brand { font-size: 1.05rem; gap: 8px; }
+  .topbar nav { align-items: center; gap: 0; }
+  .topbar nav a { padding: 6px 10px; white-space: nowrap; font-size: 0.9rem; }
+}

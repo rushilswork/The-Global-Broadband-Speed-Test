@@ -6,6 +6,8 @@
 
 **Stack:** Node · Express 5 · libSQL/Turso · bcrypt · vanilla JS (no build step). Hosted free on Render with a Turso database.
 
+![SpeedPulse result screen](docs/test.jpg)
+
 A browser-based speed test with accounts and history. Measures **your** connection (not the server's): download, upload, latency, jitter and a **bufferbloat grade** (latency under load).
 
 ## Features
@@ -15,6 +17,8 @@ A browser-based speed test with accounts and history. Measures **your** connecti
 - Works signed out (results kept in the browser). Sign up to keep history across devices; local results are migrated on sign-in
 - History page: summary stats, download/upload chart, delete, CSV export
 - Download a shareable result image
+- Delete your account and all data at any time (password-confirmed)
+- Accessible: zero axe-core WCAG 2.1 AA violations on every page, keyboard friendly, responsive down to phone width
 - No frameworks, no build step
 
 ## Run
@@ -44,6 +48,23 @@ npm test
 - Helmet with a strict Content-Security-Policy (`script-src 'self'`; only `speed.cloudflare.com` allowed for cross-origin requests)
 - Rate limits on auth and test endpoints; validated, size-limited inputs; per-user data access
 - No secrets in the repo
+
+## How it works
+```
+Browser ──(download/upload/ping)──► Cloudflare speed endpoints   (or this server's /api/down, /api/up, /api/ping)
+   │
+   └──(JSON, session cookie)──► Express API ──► libSQL (local file in dev, Turso in production)
+```
+- The **engine** (`public/js/engine.js`) runs entirely in the browser: 6 parallel download streams and 4 upload streams for ~8 s each, sampled every 100 ms. It reports the average after the first 1.5 s (TCP ramp-up) and runs a background pinger during each transfer to measure latency under load.
+- **Bufferbloat** = median loaded latency minus idle latency, graded A+ (<5 ms) to F (≥400 ms).
+- The server only stores finished results; it never sees test traffic when using Cloudflare.
+
+## Limitations
+- Free hosting: the Render instance sleeps after ~15 minutes idle (first load ~50 s). Accounts and history persist because they live in Turso, not on Render's disk.
+- Browser tests are bounded by the device, Wi-Fi, VPNs and the route to the test server; treat results as an estimate.
+- Cloudflare only exposes your IP to browsers, so city/ISP aren't shown for that server.
+- No password reset or email verification yet.
+- Tests cover the API and measurement logic; there are no browser end-to-end tests.
 
 ## Notes on accuracy
 Browser tests are bounded by the device, Wi-Fi, VPNs and the test server's route. Cloudflare only exposes your IP to browsers, so location/ISP are not shown for that server. Upload progress is measured from bytes the browser has handed to the network, so very short tests can over-read slightly; the ramp-up skip reduces this.
@@ -78,3 +99,6 @@ docker run -p 3000:3000 -e NODE_ENV=production -e SESSION_SECRET=$(openssl rand 
 ```
 
 > The previous version stored plaintext passwords and a database credential in the source (now removed). If you ever used it, that credential should be considered exposed and rotated.
+
+## License
+MIT, see [LICENSE](LICENSE).
